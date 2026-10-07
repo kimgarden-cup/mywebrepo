@@ -1,0 +1,68 @@
+# 비교표 작성하기
+
+비교 항목 , 라이브러리 없이 , 라이브러리로
+ 18줄  5줄 
+처리하기 어려웠던 부분** 빈 값이나 예외 처리를 직접 구현해야 해서 복잡했음
+라이브러리 함수의 정확한 사용법을 찾아봐야 했음
+| **실행 결과** | 과목별 평균이 소수점 둘째 자리까지 정상 출력됨 동일하게 과목별 평균이 깔끔하게 출력
+
+
+빈 값을 건너뛰는 대신 if-else 문을 써서 점수를 0.0으로 처리하고 평균에 반영하도록 수정했습니다.
+
+---------------------------------------------------------------
+
+f = open("scores.csv", "r", encoding="utf-8")
+lines = f.readlines()
+f.close()
+
+print(len(lines))
+print(lines[0])
+print(lines[1])
+
+f = open("scores.csv", "r", encoding="utf-8")
+lines = f.readlines()
+f.close()
+
+header = lines[0].strip().split(",")
+print(header)
+
+first = lines[1].strip().split(",")
+print(first)
+
+header = lines[0].strip().split(",")
+cat_idx = header.index("category")
+score_idx = header.index("score")
+
+count = 0
+totals = {}
+counts = {}
+for line in lines[1:]:
+    parts = line.strip().split(",")
+    raw = parts[score_idx].strip()
+    if raw == "":
+        continue
+    try:
+        score = float(raw)
+    except ValueError:
+        continue
+    count = count + 1
+    category = parts[cat_idx]
+    if category not in totals:
+        totals[category] = 0.0
+        counts[category] = 0
+    totals[category] += score
+    counts[category] += 1
+
+count = count + 1
+-----------------------------------------------
+
+for c in sorted(totals.keys()):
+    avg = totals[c] / counts[c]
+  import pandas as pd
+
+df = pd.read_csv("scores.csv")
+df["score"] = pd.to_numeric(df["score"], errors="coerce")
+result = df.groupby("category")["score"].mean().round(2)
+print(result)  print(c, round(avg, 2))
+
+
